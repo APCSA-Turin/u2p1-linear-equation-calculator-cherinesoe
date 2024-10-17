@@ -12,12 +12,17 @@ public class LinearCalculator{
     //For example, "(1,2)" and "(3,4)" would be two parameter values 
     //You will have to parse the string into 4 integers, representing the 2 points.
     public LinearCalculator(String coord1, String coord2){ // <--add 2 string parameters to this constructor
+        //searches for the index of the comma within the first String
         int idx1 = coord1.indexOf(",");
-        x1 = Integer.valueOf(coord1.substring(1, idx1));
-        y1 = Integer.valueOf(coord1.substring(idx1 + 1));
+        //singles out the numbers within the first String and converts them to an integer
+        x1 = Integer.parseInt(coord1.substring(1, idx1));
+        y1 = Integer.parseInt(coord1.substring(idx1 + 1, coord1.length() - 1));
+
+        //searches for the index of the comma within the second String
         int idx2 = coord2.indexOf(",");
-        x2 = Integer.valueOf(coord2.substring(1, idx2));
-        y2 = Integer.valueOf(coord2.substring(idx2 + 1));
+        //singles out the numbers within the second String and converts them to an integer
+        x2 = Integer.parseInt(coord2.substring(1, idx2));
+        y2 = Integer.parseInt(coord2.substring(idx2 + 1, coord2.length() - 1));
     }
 
 
@@ -53,6 +58,9 @@ public class LinearCalculator{
     //calculates the y intercept of the equation and returns the value to the nearest HUNDREDTH
     //if y-int if undefined, should return -999.99
     public double yInt(){
+        if (slope() == -999.99) {
+            return -999.99;
+        }
         double yInt = y1 - slope() * x1;
         yInt = roundedToHundredth(yInt);
         return yInt;
@@ -65,7 +73,8 @@ public class LinearCalculator{
         if ((x2 - x1) == 0) {
             return -999.99;
         }
-        double slope = (y2 - y1) / (x2 - x1);
+        //calculates slope based on change in y and x
+        double slope = ((double) y2 - y1) / ((double) x2 - x1);
         slope = roundedToHundredth(slope);
         return slope;
     }
@@ -75,14 +84,26 @@ public class LinearCalculator{
     //if the equation has no slope, the equation should return -> "undefined"
     //HINT: You may need other custom methods to decrease the amount of code in the equations() method
     public String equation(){
-        return "y = " + slope() + "x + " + yInt();
+        if (slope() ==  -999.99) {
+            return "undefined";
+        }
+        if (slope() == 0) {
+            return "y=" + yInt();
+        }
+        if (yInt() == 0) {
+            return "y=" + slope() + "x";
+        }
+        if (yInt() < 0) {
+            return "y=" + slope() + "x" + yInt();
+        }
+        return "y=" + slope() + "x+" + yInt();
     }
 
 
     //roundedToHundredth(double x)-> returns double
     //calculates the input to the nearest hundredth and returns that value
     public double roundedToHundredth(double x){
-        double rounded = Math.round(x * 100) / 100;
+        double rounded = Math.round(x * 100.0) / 100.0;
         return rounded;
     }
 
